@@ -6,18 +6,19 @@ import { createServerClient } from '../../../lib/supabase'
 import { ArrowLeft, MapPin, Calendar, User, Heart } from 'lucide-react'
 
 interface ExhibitionPageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function ExhibitionPage({ params }: ExhibitionPageProps) {
+    const resolvedParams = await params
     const supabase = await createServerClient()
 
     const { data: exhibition, error } = await supabase
         .from('exhibitions')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', resolvedParams.id)
         .single()
 
     if (error || !exhibition) {
